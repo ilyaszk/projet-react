@@ -1,13 +1,13 @@
 import User from "../models/users.js";
-import {Op} from "sequelize";
+import { Op } from "sequelize";
 import nodemailer from 'nodemailer';
 import mjml2html from 'mjml';
 
 async function generateID(id) {
-    const {count} = await findAndCountAllUsersById(id);
+    const { count } = await findAndCountAllUsersById(id);
     if (count > 0) {
         id = id.substring(0, 5);
-        const {count} = await findAndCountAllUsersById(id);
+        const { count } = await findAndCountAllUsersById(id);
         id = id + (count + 1);
     }
     return id;
@@ -53,25 +53,25 @@ export async function findAndCountAllUsersByUsername(username) {
 
 export async function registerUser(userDatas, bcrypt) {
     if (!userDatas) {
-        return {error: "Aucune donnée à enregistrer"};
+        return { error: "Aucune donnée à enregistrer" };
     }
-    const {firstname, lastname, username, email, password} = userDatas;
+    const { firstname, lastname, username, email, password } = userDatas;
     console.log(userDatas)
     if (!firstname || !lastname || !username || !email || !password) {
-        return {error: "Tous les champs sont obligatoires"};
+        return { error: "Tous les champs sont obligatoires" };
     }
     //vérification que l'email n'est pas déjà utilisé
-    const {count: emailCount} = await findAndCountAllUsersByEmail(email);
+    const { count: emailCount } = await findAndCountAllUsersByEmail(email);
     if (emailCount > 0) {
-        return {error: "L'adresse email est déjà utilisée."};
+        return { error: "L'adresse email est déjà utilisée." };
     }
 
     //vérification que le pseudo n'est pas déjà utilisé
-    const {count: usernameCount} = await findAndCountAllUsersByUsername(
+    const { count: usernameCount } = await findAndCountAllUsersByUsername(
         username
     );
     if (usernameCount > 0) {
-        return {error: "Le nom d'utilisateur est déjà utilisé."};
+        return { error: "Le nom d'utilisateur est déjà utilisé." };
     }
     //création de l'identifiant
     let id = await generateID(
@@ -91,7 +91,7 @@ export async function registerUser(userDatas, bcrypt) {
     const createdUser = await User.create(user);
 
     // Créer un lien de confirmation (ici un exemple simple)
-    const confirmationLink = ` http://localhost:3000/confirm/${email}`;
+    const confirmationLink = ` http://localhost:5173/auth/confirmEmail/${email}`;
 
     // Construire l'email avec MJML
     const mjmlTemplate = `
@@ -143,24 +143,24 @@ export async function registerUser(userDatas, bcrypt) {
 
     return createdUser;
 }
-
+//msg d'erreur en anglais
 export async function loginUser(userDatas, app) {
     if (!userDatas) {
-        return {error: "Aucune donnée n'a été envoyée"};
+        return { error: "no data to login" };
     }
-    const {email, password} = userDatas;
+    const { email, password } = userDatas;
     if (!email || !password) {
-        return {error: "Tous les champs sont obligatoires"};
+        return { error: "All fields are required" };
     }
     //vérification que l'email est utilisé
-    const {count, rows} = await findAndCountAllUsersByEmail(email);
+    const { count, rows } = await findAndCountAllUsersByEmail(email);
     if (count === 0) {
         return {
-            error: "Il n'y a pas d'utilisateur associé à cette adresse email.",
+            error: "No user found with this email",
         };
     } else if (rows[0].verified === false) {
         return {
-            error: "Votre compte n'est pas encore vérifié. Veuillez vérifier votre boîte mail.",
+            error: "Check your email to confirm your account",
         };
     }
     //récupération de l'utilisateur
@@ -174,12 +174,12 @@ export async function loginUser(userDatas, app) {
     //comparaison des mots de passe
     const match = await app.bcrypt.compare(password, user.password);
     if (!match) {
-        return {error: "Mot de passe incorrect"};
+        return { error: "ID/PASSWORD incorrect" };
     }
     // Générer le JWT après une authentification réussie
     const token = app.jwt.sign(
-        {id: user.id, username: user.username},
-        {expiresIn: "3h"}
+        { id: user.id, username: user.username },
+        { expiresIn: "3h" }
     );
-    return {token, user: {id: user.id, username: user.username, email: user.email, firstname: user.firstname, lastname: user.lastname}};
+    return { token, user: { id: user.id, username: user.username, email: user.email, firstname: user.firstname, lastname: user.lastname } };
 }
