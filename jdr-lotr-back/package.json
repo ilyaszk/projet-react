@@ -24,5 +24,6 @@
 	},
 	"scripts": {
 		"dev": "node --watch src/server.js"
+		"build": "tsc",
 	}
 }
