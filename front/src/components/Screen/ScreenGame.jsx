@@ -45,9 +45,10 @@ const Puissance = () => {
         setIsMyTurn(nextPlayer !== currentPlayer);
       });
 
-      socket.on("gameWon", (winner) => {
+      socket.on("gameWon", ({ winner, userUpdte }) => {
         console.log("Game won by:", winner);
         setWinner(winner);
+        localStorage.setItem("user", JSON.stringify(userUpdte));
       });
 
       return () => {
@@ -164,7 +165,11 @@ const Puissance = () => {
       if (winningCellsResult) {
         setWinner(user.username);
         setWinningCells(winningCellsResult); // Store the winning cells
-        socket.emit("gameWon", { winner: user.username, roomCode });
+        socket.emit("gameWon", {
+          winner: user.username,
+          idWin: user.id,
+          roomCode,
+        });
       } else {
         socket.emit("makeMove", {
           board: newBoard,
@@ -239,11 +244,15 @@ const Puissance = () => {
     <div
       className={`game-container ${isMyTurn ? "your-turn" : "opponent-turn"}`}
     >
-      <h1 className="text-white">Puissance 4</h1>
       {winner ? (
         <h2>{winner === user.username ? "You Win!" : "You Lose!"}</h2>
       ) : (
-        <h2>{isMyTurn ? "Your Turn" : "Opponent's Turn"}</h2>
+        <h2
+          className="pb-4 text-white text-2xl font-bold text-center
+        "
+        >
+          {isMyTurn ? "Your Turn" : "Opponent's Turn"}
+        </h2>
       )}
       <div className="board">
         {board.map((row, rowIndex) => (

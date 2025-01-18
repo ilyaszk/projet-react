@@ -1,4 +1,4 @@
-import { createGame, updateGame } from "../controllers/games.js";
+import {createGame, updateGame} from "../controllers/games.js";
 export function gamesRoutes(app) {
 	//création d'un jeu
 	app.post(

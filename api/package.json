@@ -1,5 +1,5 @@
 {
-  "name": "lotr-jdr-api",
+  "name": "api",
   "version": "1.0.0",
   "description": "API pour le jeu de rôle LOTR",
   "main": "index.js",

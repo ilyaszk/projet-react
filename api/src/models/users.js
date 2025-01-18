@@ -38,6 +38,11 @@ const User = sequelize.define("user", {
 		allowNull: false,
 		defaultValue: false,
 	},
+	score: {
+		type: DataTypes.INTEGER,
+		allowNull: false,
+		defaultValue: 0,
+	},
 });
 
 export default User;

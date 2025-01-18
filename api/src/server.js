@@ -7,12 +7,13 @@ import fastifySwagger from "@fastify/swagger";
 import fastifySwaggerUi from "@fastify/swagger-ui";
 import fastifyJWT from "@fastify/jwt";
 // Routes
-import {usersRoutes} from "./routes/users.js";
-import {gamesRoutes} from "./routes/games.js";
+import { usersRoutes } from "./routes/users.js";
+import { gamesRoutes } from "./routes/games.js";
 // BDD
-import {sequelize} from "./bdd.js";
+import { sequelize } from "./bdd.js";
 // Socket.io
 import socketioServer from "fastify-socket.io";
+import { updateScore } from "./controllers/users.js";
 
 // Test de la connexion
 try {
@@ -88,7 +89,7 @@ app.decorate("authenticate", async (request, reply) => {
 
         // Vérifier si le token est dans la liste noire
         if (blacklistedTokens.includes(token)) {
-            return reply.status(401).send({error: "Token invalide ou expiré"});
+            return reply.status(401).send({ error: "Token invalide ou expiré" });
         }
         await request.jwtVerify();
     } catch (err) {
@@ -118,9 +119,9 @@ app.ready().then(() => {
         console.log(`Player connected: ${socket.id}`);
 
         // Handle player joining a room
-        socket.on('joinRoom', ({username, roomCode}) => {
+        socket.on('joinRoom', ({ username, roomCode }) => {
             socket.join(roomCode);
-            players[socket.id] = {username, roomCode};
+            players[socket.id] = { username, roomCode };
             console.log(`${username} joined room ${roomCode}`);
 
             const roomPlayers = Object.values(players).filter(player => player.roomCode === roomCode);
@@ -134,17 +135,19 @@ app.ready().then(() => {
         });
 
         // Handle player move
-        socket.on('makeMove', ({board, nextPlayer, roomCode}) => {
+        socket.on('makeMove', ({ board, nextPlayer, roomCode }) => {
             console.log('Move made:', board, 'Next player:', nextPlayer);
             currentGame.board = board;
             currentGame.currentPlayer = nextPlayer;
-            app.io.to(roomCode).emit('opponentMove', {board, nextPlayer});
+            app.io.to(roomCode).emit('opponentMove', { board, nextPlayer });
         });
 
         // Handle game won
-        socket.on('gameWon', ({winner, roomCode}) => {
+        socket.on('gameWon', ({ winner, idWin, roomCode }) => {
             console.log('Game won by:', winner);
-            app.io.to(roomCode).emit('gameWon', winner);
+            console.log('idWin', idWin);
+            const userUpdte = updateScore(idWin);
+            app.io.to(roomCode).emit('gameWon', { winner, userUpdte });
         });
 
         // Handle game reset
@@ -176,7 +179,7 @@ app.ready().then(() => {
 const start = async () => {
     try {
         await sequelize
-            .sync({alter: true})
+            .sync({ alter: true })
             .then(() => {
                 console.log(chalk.green("Base de données synchronisée."));
             })
@@ -184,7 +187,7 @@ const start = async () => {
                 console.error("Erreur de synchronisation de la base de données :", error);
             });
 
-        await app.listen({port: 3000});
+        await app.listen({ port: 3000 });
         console.log("Serveur Fastify lancé sur " + chalk.blue("http://localhost:3000"));
         console.log(chalk.bgYellow("Accéder à la documentation sur http://localhost:3000/documentation"));
     } catch (err) {

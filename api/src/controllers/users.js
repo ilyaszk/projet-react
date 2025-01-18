@@ -41,6 +41,16 @@ export async function findAndCountAllUsersByEmail(email) {
     });
 }
 
+export async function getScoreBoard() {
+    return await User.findAll({
+        attributes: ['username', 'score'],
+        order: [
+            ['score', 'DESC']
+        ],
+        limit: 5
+    });
+}
+
 export async function findAndCountAllUsersByUsername(username) {
     return await User.findAndCountAll({
         where: {
@@ -181,5 +191,16 @@ export async function loginUser(userDatas, app) {
         { id: user.id, username: user.username },
         { expiresIn: "3h" }
     );
-    return { token, user: { id: user.id, username: user.username, email: user.email, firstname: user.firstname, lastname: user.lastname } };
+    return { token, user: { id: user.id, username: user.username, email: user.email, firstname: user.firstname, lastname: user.lastname, score: 0 } };
+}
+
+export async function updateScore(id) {
+    const user = await User.findByPk(id);
+    if (!user) {
+        return { error: "User not found" };
+    }
+    user.score += 700;
+
+    await user.save();
+    return user;
 }
