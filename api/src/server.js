@@ -438,7 +438,7 @@ const start = async () => {
                 console.error("Erreur de synchronisation de la base de données :", error);
             });
 
-        await app.listen({port: 3000});
+        await app.listen({port: process.env.PORT || 3000 });
         console.log("Serveur Fastify lancé sur " + chalk.blue("http://localhost:3000"));
         console.log(chalk.bgYellow("Accéder à la documentation sur http://localhost:3000/documentation"));
     } catch (err) {
