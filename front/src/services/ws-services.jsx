@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.API_PATH || 'http://localhost:3000';
+const API_URL = 'https://projet-react-memg.onrender.com';
 // Méthode GET
 export const fetchData = async (pUrl) => {
     try {
