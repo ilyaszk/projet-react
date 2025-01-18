@@ -131,7 +131,7 @@ export async function registerUser(userDatas, bcrypt) {
         service: 'gmail', // ou tout autre service de messagerie
         auth: {
             user: 'ilyaszahaf2002@gmail.com', // remplacez par votre email
-            pass: 'qhoy dlkt qpmw fscd', // remplacez par votre mot de passe
+            pass: process.env.MDP_APP, // remplacez par votre mot de passe
         },
     });
 
