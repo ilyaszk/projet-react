@@ -76,7 +76,7 @@ export default function App() {
           path: "game",
           element: (
             <ProtectedRoute isAuthenticated={isAuthenticated}>
-              <Game />
+              <Game  />
             </ProtectedRoute>
           ),
         },
