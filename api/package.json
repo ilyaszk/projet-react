@@ -11,6 +11,7 @@
     "@fastify/swagger": "^9.0.0",
     "@fastify/swagger-ui": "^5.0.1",
     "@sequelize/mysql": "^7.0.0-alpha.42",
+    "@sequelize/postgres": "^7.0.0-alpha.43",
     "chalk": "^5.3.0",
     "dotenv": "^16.4.5",
     "fastify": "^5.0.0",
