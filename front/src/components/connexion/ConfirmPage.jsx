@@ -2,8 +2,6 @@ import { useParams } from "react-router-dom";
 import { fetchData } from "../../services/ws-services";
 function ConfirmPage() {
   const { email } = useParams();
-  console.log("email", email);
-
   fetchData(`/confirm/${email}`).then((data) => {
     if (data.error) {
       alert(data.error);

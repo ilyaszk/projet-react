@@ -8,7 +8,6 @@ import CustomGameAlert from "./CustomGameAlert.jsx";
 const PongGame = () => {
     const {CurrentUser} = useContext(GlobalContext);
     const [userId] = useState(CurrentUser.id);
-    console.log("Current user id:", userId);
     const canvasRef = useRef(null);
     const [socket, setSocket] = useState(null);
     const [gameStarted, setGameStarted] = useState(false);
@@ -86,7 +85,6 @@ const PongGame = () => {
 
         socket.on('playerAssigned', ({side}) => {
             setPlayerSide(side);
-            console.log('Assigned to side:', side);
         });
 
         socket.on('gameState', (gameState) => {
@@ -140,14 +138,12 @@ const PongGame = () => {
     }, [socket, gameStarted, playerSide, currentRoom]);
 
     const createRoom = () => {
-        console.log('Joining user:', playerName, 'with userId:', userId);
         if (newRoomName && playerName) {
             socket.emit('createRoom', {roomName: newRoomName, playerName, userId});
         }
     };
 
     const joinRoom = (roomId) => {
-        console.log('Joining user:', playerName, 'to room:', roomId, 'with userId:', userId);
         if (playerName) {
             const room = rooms.find(r => r.roomId === roomId);
             if (room) {
@@ -216,7 +212,6 @@ const PongGame = () => {
     });
 
     function handlePlayerNameChange(name) {
-        console.log('Player name:', name);
         setPlayerName(name);
     }
 

@@ -7,7 +7,6 @@ export const GlobalProvider = ({ children }) => {
   });
 
   useEffect(() => {
-    console.log("Current user:", CurrentUser);
     localStorage.setItem("user", JSON.stringify(CurrentUser));
   }, [CurrentUser]);
 

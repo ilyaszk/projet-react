@@ -49,9 +49,7 @@ export default function RegisterForm() {
       }
     },
     onSubmit: (values) => {
-      console.log("Register Form Data", values);
       postData("/register", values).then((data) => {
-        console.log("Server response", data);
         if (data.error) {
           alert(data.error);
           return;

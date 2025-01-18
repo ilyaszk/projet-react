@@ -27,7 +27,6 @@ export default function App() {
   // Simulate a login function
   const handleLogin = (pData) => {
     postData("/login", pData).then((data) => {
-      console.log("Server response", data);
       if (data.error) {
         alert(data.error);
         return;
@@ -42,7 +41,6 @@ export default function App() {
   // Simulate a logout function
   const handleLogout = () => {
     postData("/logout", {}).then((data) => {
-      console.log("Server response", data);
       if (data.error) {
         alert(data.error);
         return;
