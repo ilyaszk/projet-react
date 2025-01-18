@@ -440,10 +440,9 @@ const start = async () => {
 
 
         await app.listen({
-            host: "0.0.0.0",  // Enlever "http://" et les ":"
+            host: process.env.HOST || "0.0.0.0",
             port: process.env.PORT || 3000
-        });        console.log("Serveur Fastify lancé sur " + chalk.blue("http://0.0.0.0:3000"));
-        console.log(chalk.bgYellow("Accéder à la documentation sur http://0.0.0.0:3000/documentation"));
+        });
     } catch (err) {
         console.log(err);
         process.exit(1);

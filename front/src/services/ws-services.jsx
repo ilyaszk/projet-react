@@ -1,5 +1,4 @@
-const API_URL = 'http://localhost:3000';
-
+const API_URL = import.meta.env.API_PATH || 'http://localhost:3000';
 // Méthode GET
 export const fetchData = async (pUrl) => {
     try {
@@ -13,6 +12,7 @@ export const fetchData = async (pUrl) => {
         console.error('Erreur:', error);
         throw error;
     }
+
 };
 
 // Méthode POST

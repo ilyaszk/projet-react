@@ -22,9 +22,10 @@ const PongGame = () => {
     const [rematchRequested, setRematchRequested] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
     const [alertDetails, setAlertDetails] = useState(null);
-
+    const API_URL = import.meta.env.API_PATH || 'http://localhost:3000'
     useEffect(() => {
-        const newSocket = io('http://localhost:3000');
+
+        const newSocket = io(API_URL);
         setSocket(newSocket);
 
         return () => newSocket.close();
