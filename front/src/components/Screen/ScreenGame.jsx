@@ -22,10 +22,9 @@ const PongGame = () => {
     const [rematchRequested, setRematchRequested] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
     const [alertDetails, setAlertDetails] = useState(null);
-    const API_URL =  'https://projet-react-memg.onrender.com'
     useEffect(() => {
 
-        const newSocket = io(API_URL);
+        const newSocket = io('https://projet-react-memg.onrender.com');
         setSocket(newSocket);
 
         return () => newSocket.close();

@@ -1,8 +1,7 @@
-const API_URL = 'https://projet-react-memg.onrender.com';
 // Méthode GET
 export const fetchData = async (pUrl) => {
     try {
-        const response = await fetch(API_URL + pUrl);
+        const response = await fetch('https://projet-react-memg.onrender.com' + pUrl);
         if (!response.ok) {
             throw new Error('Erreur lors de la récupération des données');
         }
@@ -18,7 +17,7 @@ export const fetchData = async (pUrl) => {
 // Méthode POST
 export const postData = async (pUrl, pData) => {
     try {
-        const response = await fetch(API_URL + pUrl, {
+        const response = await fetch('https://projet-react-memg.onrender.com' + pUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
