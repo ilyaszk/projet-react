@@ -205,7 +205,7 @@ app.ready().then(() => {
                 const newRoom = new GameRoom(roomId, roomName);
 
                 // Ajouter le premier joueur
-                newRoom.addPlayer(socket.id, playerName,userId);
+                newRoom.addPlayer(socket.id, playerName, userId);
 
                 // Sauvegarder la salle
                 rooms.set(roomId, newRoom);
@@ -438,9 +438,12 @@ const start = async () => {
                 console.error("Erreur de synchronisation de la base de données :", error);
             });
 
-        await app.listen({port: process.env.PORT || 3000 });
-        console.log("Serveur Fastify lancé sur " + chalk.blue("http://localhost:3000"));
-        console.log(chalk.bgYellow("Accéder à la documentation sur http://localhost:3000/documentation"));
+
+        await app.listen({
+            host: "0.0.0.0",  // Enlever "http://" et les ":"
+            port: process.env.PORT || 3000
+        });        console.log("Serveur Fastify lancé sur " + chalk.blue("http://0.0.0.0:3000"));
+        console.log(chalk.bgYellow("Accéder à la documentation sur http://0.0.0.0:3000/documentation"));
     } catch (err) {
         console.log(err);
         process.exit(1);
