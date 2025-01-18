@@ -1,4 +1,5 @@
 import Puissance from "./Screen/ScreenGame.jsx";
+import PongGame from "./Screen/ScreenGame.jsx";
 
 export default function Game() {
   return (
@@ -8,7 +9,7 @@ export default function Game() {
       </h1>
       <div className="flex justify-center items-center h-full">
         <div className="p-6 rounded-lg shadow-2xl bg-white dark:bg-gray-800">
-          <Puissance />
+          <PongGame />
         </div>
       </div>
     </div>
