@@ -25,8 +25,9 @@ export default function App() {
     localStorage.getItem("token") !== null
   );
   // Simulate a login function
-  const handleLogin = (pData) => {
+  const handleLogin = (pData, pCallBack) => {
     postData("/login", pData).then((data) => {
+      pCallBack();
       if (data.error) {
         alert(data.error);
         return;
@@ -74,7 +75,7 @@ export default function App() {
           path: "game",
           element: (
             <ProtectedRoute isAuthenticated={isAuthenticated}>
-              <Game  />
+              <Game />
             </ProtectedRoute>
           ),
         },

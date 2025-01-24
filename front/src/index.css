@@ -4,7 +4,7 @@
 
 .game-container {
   text-align: center;
-  padding: 0 20px 0 20px ;
+  padding: 0 20px 0 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -178,4 +178,25 @@
     background-color: #f9f9f9;
     color: black;
   }
+}
+
+@keyframes glow {
+  from {
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #e60073;
+  }
+  to {
+    text-shadow: 0 0 10px #fff, 0 0 20px #ff4da6, 0 0 30px #e60073;
+  }
+}
+@keyframes spin-reverse {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+.animate-spin-reverse {
+  animation: spin-reverse 1s linear infinite;
 }
