@@ -100,6 +100,7 @@ const PongGame = () => {
       setShowAlert(true);
       setTimeout(() => {
         setCurrentRoom(null);
+        setRooms([]);
       }, 10000);
     });
 
@@ -380,6 +381,7 @@ const PongGame = () => {
       <button
         onClick={() => {
           setCurrentRoom(null);
+          setRooms([]);
         }}
         className="px-6 py-2 mb-4 rounded-full font-bold shadow-lg
               dark:bg-gradient-to-r dark:from-cyan-500 dark:to-blue-500
