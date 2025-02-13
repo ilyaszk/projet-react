@@ -101,6 +101,7 @@ export async function registerUser(userDatas, bcrypt) {
     const createdUser = await User.create(user);
 
     // Créer un lien de confirmation (ici un exemple simple)
+    // const confirmationLink = ` http://localhost:5173/auth/confirmEmail/${email}`;
     const confirmationLink = ` https://projet-react-six.vercel.app/auth/confirmEmail/${email}`;
 
     // Construire l'email avec MJML

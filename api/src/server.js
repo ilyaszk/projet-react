@@ -7,13 +7,13 @@ import fastifySwagger from "@fastify/swagger";
 import fastifySwaggerUi from "@fastify/swagger-ui";
 import fastifyJWT from "@fastify/jwt";
 // Routes
-import {usersRoutes} from "./routes/users.js";
-import {gamesRoutes} from "./routes/games.js";
+import { usersRoutes } from "./routes/users.js";
+import { gamesRoutes } from "./routes/games.js";
 // BDD
-import {sequelize} from "./bdd.js";
+import { sequelize } from "./bdd.js";
 // Socket.io
 import socketioServer from "fastify-socket.io";
-import {updateScore} from "./controllers/users.js";
+import { updateScore } from "./controllers/users.js";
 
 // Test de la connexion
 try {
@@ -89,7 +89,7 @@ app.decorate("authenticate", async (request, reply) => {
 
         // Vérifier si le token est dans la liste noire
         if (blacklistedTokens.includes(token)) {
-            return reply.status(401).send({error: "Token invalide ou expiré"});
+            return reply.status(401).send({ error: "Token invalide ou expiré" });
         }
         await request.jwtVerify();
     } catch (err) {
@@ -172,8 +172,8 @@ function createGameState() {
             dy: BALL_SPEED
         },
         paddles: {
-            left: {y: CANVAS_HEIGHT / 2 - PADDLE_HEIGHT / 2},
-            right: {y: CANVAS_HEIGHT / 2 - PADDLE_HEIGHT / 2}
+            left: { y: CANVAS_HEIGHT / 2 - PADDLE_HEIGHT / 2 },
+            right: { y: CANVAS_HEIGHT / 2 - PADDLE_HEIGHT / 2 }
         },
         scores: {
             left: 0,
@@ -199,7 +199,7 @@ app.ready().then(() => {
         });
 
         // Créer une nouvelle salle
-        socket.on('createRoom', ({roomName, playerName, userId}) => {
+        socket.on('createRoom', ({ roomName, playerName, userId }) => {
             try {
                 const roomId = `room_${Date.now()}`;
                 const newRoom = new GameRoom(roomId, roomName);
@@ -231,27 +231,27 @@ app.ready().then(() => {
                 console.log(`Salle créée: ${roomName} (${roomId})`);
             } catch (error) {
                 console.error('Erreur création salle:', error);
-                socket.emit('error', {message: 'Erreur lors de la création de la salle'});
+                socket.emit('error', { message: 'Erreur lors de la création de la salle' });
             }
         });
 
         // Rejoindre une salle
-        socket.on('joinRoom', ({roomId, playerName, userId}) => {
+        socket.on('joinRoom', ({ roomId, playerName, userId }) => {
             try {
                 const room = rooms.get(roomId);
 
                 if (!room) {
-                    socket.emit('error', {message: 'Cette salle n\'existe pas'});
+                    socket.emit('error', { message: 'Cette salle n\'existe pas' });
                     return;
                 }
 
                 if (room.isFull()) {
-                    socket.emit('error', {message: 'La salle est pleine'});
+                    socket.emit('error', { message: 'La salle est pleine' });
                     return;
                 }
 
                 if (room.status !== 'waiting') {
-                    socket.emit('error', {message: 'Une partie est déjà en cours'});
+                    socket.emit('error', { message: 'Une partie est déjà en cours' });
                     return;
                 }
 
@@ -285,10 +285,10 @@ app.ready().then(() => {
                     });
 
                     // Envoyer une confirmation individuelle à chaque joueur
-                    socket.emit('playerAssigned', {side: 'right'});
+                    socket.emit('playerAssigned', { side: 'right' });
                     const otherSocket = Array.from(room.players.keys()).find(id => id !== socket.id);
                     if (otherSocket) {
-                        app.io.to(otherSocket).emit('playerAssigned', {side: 'left'});
+                        app.io.to(otherSocket).emit('playerAssigned', { side: 'left' });
 
                         startGameLoop(roomId);
                     }
@@ -297,12 +297,12 @@ app.ready().then(() => {
                 }
             } catch (error) {
                 console.error('Erreur join room:', error);
-                socket.emit('error', {message: 'Erreur lors de la tentative de rejoindre la salle'});
+                socket.emit('error', { message: 'Erreur lors de la tentative de rejoindre la salle' });
             }
         });
 
         // Gestion des mouvements de paddle
-        socket.on('paddleMove', ({roomId, position, player}) => {
+        socket.on('paddleMove', ({ roomId, position, player }) => {
             const gameState = games.get(roomId);
             if (gameState) {
                 const paddle = player === 'left' ? gameState.paddles.left : gameState.paddles.right;
@@ -319,7 +319,7 @@ app.ready().then(() => {
                     if (room.getPlayerCount() === 0) {
                         rooms.delete(roomId);
                         games.delete(roomId);
-                        app.io.emit('roomRemoved', {roomId});
+                        app.io.emit('roomRemoved', { roomId });
                     } else {
                         if (games.has(roomId)) {
                             games.delete(roomId);
@@ -430,7 +430,7 @@ function resetBall(gameState) {
 const start = async () => {
     try {
         await sequelize
-            .sync({alter: true})
+            .sync({ alter: true })
             .then(() => {
                 console.log(chalk.green("Base de données synchronisée."));
             })
@@ -443,6 +443,11 @@ const start = async () => {
             host: process.env.HOST || "0.0.0.0",
             port: process.env.PORT || 3000
         });
+
+        //log de l'adresse et du port http://localhost:3000/documentation
+        console.log(chalk.green(`Server listening on  http://${process.env.HOST + ':' + app.server.address().port}`));
+        //log de l'adressede la doc
+        console.log(chalk.green(`Documentation disponible sur http://${process.env.HOST + ':' + app.server.address().port}/documentation`));
     } catch (err) {
         console.log(err);
         process.exit(1);

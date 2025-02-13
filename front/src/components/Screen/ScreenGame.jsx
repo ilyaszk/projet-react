@@ -4,6 +4,7 @@ import { GlobalContext } from "../../GlobalContext.jsx";
 import { useFormik } from "formik";
 import { z } from "zod";
 import CustomGameAlert from "./CustomGameAlert.jsx";
+import { useNavigate } from "react-router-dom";
 
 const PongGame = () => {
   const { CurrentUser } = useContext(GlobalContext);
@@ -18,11 +19,10 @@ const PongGame = () => {
   const [playerName, setPlayerName] = useState("");
   const [showCreateRoom, setShowCreateRoom] = useState(false);
   const [newRoomName, setNewRoomName] = useState("");
-  const [gameEnded, setGameEnded] = useState(false);
-  const [rematchRequested, setRematchRequested] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [alertDetails, setAlertDetails] = useState(null);
   useEffect(() => {
+    // const newSocket = io("http://localhost:3000");
     const newSocket = io("https://projet-react-memg.onrender.com");
     setSocket(newSocket);
 
@@ -64,16 +64,16 @@ const PongGame = () => {
     socket.on("playerLeft", () => {
       if (gameStarted) {
         setGameStarted(false);
-        setGameEnded(true);
-        setRematchRequested(false);
+        setAlertDetails({
+          winner: playerSide === "left" ? "right" : "left",
+          scores,
+          reason: "Player left the game",
+        });
       }
     });
 
     socket.on("gameStart", ({ gameState }) => {
       setGameStarted(true);
-      setGameEnded(false);
-      setRematchRequested(false);
-
       // Initialiser le canvas avec l'état initial
       const canvas = canvasRef.current;
       if (canvas) {
@@ -97,15 +97,8 @@ const PongGame = () => {
 
     socket.on("gameEnd", ({ winner, scores, reason }) => {
       setGameStarted(false);
-      setGameEnded(true);
       setAlertDetails({ winner, scores, reason });
       setShowAlert(true);
-    });
-
-    // eslint-disable-next-line no-unused-vars
-    socket.on("rematchRequested", ({ playerName }) => {
-      // TODO : Afficher une alerte pour demander au joueur s'il veut rejouer
-      setRematchRequested(true);
     });
 
     socket.emit("getRooms");
@@ -149,13 +142,6 @@ const PongGame = () => {
         setCurrentRoom({ id: roomId, name: room.roomName });
         socket.emit("joinRoom", { roomId, playerName, userId });
       }
-    }
-  };
-
-  const requestRematch = () => {
-    if (currentRoom) {
-      socket.emit("requestRematch", { roomId: currentRoom.id });
-      setRematchRequested(true);
     }
   };
 
@@ -398,7 +384,7 @@ const PongGame = () => {
               bg-gradient-to-r from-yellow-400 to-yellow-600
               transition-all duration-300 hover:scale-105"
       >
-        🔙 Back to Lobb
+        🔙 Back to Lobby
       </button>
 
       {showAlert && (
@@ -427,21 +413,6 @@ const PongGame = () => {
           className="relative z-10 border-2 border-white  opacity-60"
         />
       </div>
-
-      {gameEnded && !rematchRequested && (
-        <button
-          onClick={requestRematch}
-          className="mt-4 px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-        >
-          Request Rematch
-        </button>
-      )}
-
-      {rematchRequested && !gameStarted && (
-        <div className="mt-4 text-white text-xl font-bold text-center animate-bounce">
-          Waiting for other player...
-        </div>
-      )}
 
       {gameStarted && (
         <div className="mt-4 text-white text-xl font-bold text-center">
