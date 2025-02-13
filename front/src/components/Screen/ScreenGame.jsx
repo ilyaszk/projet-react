@@ -4,7 +4,6 @@ import { GlobalContext } from "../../GlobalContext.jsx";
 import { useFormik } from "formik";
 import { z } from "zod";
 import CustomGameAlert from "./CustomGameAlert.jsx";
-import { useNavigate } from "react-router-dom";
 
 const PongGame = () => {
   const { CurrentUser } = useContext(GlobalContext);
@@ -99,6 +98,9 @@ const PongGame = () => {
       setGameStarted(false);
       setAlertDetails({ winner, scores, reason });
       setShowAlert(true);
+      setTimeout(() => {
+        setCurrentRoom(null);
+      }, 10000);
     });
 
     socket.emit("getRooms");
